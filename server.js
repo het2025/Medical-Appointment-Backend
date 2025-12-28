@@ -18,14 +18,26 @@ try {
 
 const app = express();
 const httpServer = createServer(app);
+
+// CORS configuration for both development and production
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://medical-appointment-frontend-mu.vercel.app",
+  process.env.FRONTEND_URL // Allow configurable frontend URL
+].filter(Boolean);
+
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"]
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
   }
 });
 
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 app.use(express.json());
 
 // Database Connection
